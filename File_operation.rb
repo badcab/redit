@@ -1,8 +1,3 @@
-#!/usr/local/bin/ruby
-
-#change $buffer to act as an array thus keeping things easer
-
-
 class File_operation
 	def save
 		if !$file_name then
@@ -49,51 +44,3 @@ class File_operation
 		$saved_buffer = $buffer
 	end
 end
-
-class Buffer_mod
-	@@line_buffer = ''
-	def kill_line
-		#ctrl - k
-	end
-
-	def unkill_line
-		#ctrl + u
-	end
-
-	def find
-		#ctrl + f
-	end
-
-	def indent
-		#ctrl + i
-	end
-
-end
-
-#need to add something for syntax highlighting
-
-BEGIN {
-	$current_line = 0;
-	argv = ARGF.argv[0].to_s
-	if argv.length > 0 then
-		$file_name = argv
-	else
-		$file_name = false
-	end
-}
-
-fo = File_operation.new
-fo.open
-
-#on ctrl + c || ctrl + q fo.exit
-
-#on ctrl + s fo.save
-
-#have menu on top of the screen with cmd that can be entered
-
-#have rest of the screen be editable
-
-
-END{
-
-}
