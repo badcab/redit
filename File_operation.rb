@@ -40,6 +40,8 @@ class File_operation
 			aFile = File.open($file_name, 'r')
 			$buffer = aFile.each_line
 			aFile.close if aFile
+		else
+			$buffer = Array.new
 		end
 		$saved_buffer = $buffer
 	end

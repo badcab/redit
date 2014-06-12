@@ -1,8 +1,9 @@
 class Highlight
 	@@language = '';
 	def initialize
-		#get the file ext from the edit file
-		#check if it is php rb shell
+		if $file_name.class == String then
+			@@language = $file_name.split(".").last
+		end
 	end
 	
 	def run
