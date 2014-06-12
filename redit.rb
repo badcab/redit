@@ -1,24 +1,37 @@
 #!/usr/local/bin/ruby
+
+#change $buffer to act as an array thus keeping things easer
+
+
 class File_operation
 	def save
-#if no $file_name then run create
+		if !$file_name then
+			self.create
+		end
 		aFile = File.new($file_name, 'w')
-		$buffer.gsub '    ', "\t"
-		aFile.syswrite($buffer) if aFile
+
+		result = '';
+		$buffer.each do |line|
+			line.gsub '    ', "\t"
+			#strip coloring and other garbage
+			result += line
+		end
+
+		aFile.syswrite(result) if aFile
 #check for exceptions
 		$saved_buffer = $buffer
 
 		aFile.close if aFile
 	end
-	
-	def create 
+
+	def create
 		print 'enter desired file name: '
 		$file_name = gets.chomp
 		self.save
 	end
-	
+
 	def exit
-		if $saved_buffer != $buffer then 
+		if $saved_buffer != $buffer then
 			print 'unsaved content save? [y/n]: '
 			if gets.chomp.downcase.strip.chars.first != 'n' then
 				self.save
@@ -26,49 +39,61 @@ class File_operation
 		end
 		exit
 	end
-	
+
 	def open
-		#if file name not set then this should return nil
-		aFile = File.open($file_name, 'r')
-		aFile.each_line do |line|
-			$buffer += line  
+		if $file_name then
+			aFile = File.open($file_name, 'r')
+			$buffer = aFile.each_line
+			aFile.close if aFile
 		end
-		$buffer.gsub '    ', "\t"
-		aFile.close if aFile
 		$saved_buffer = $buffer
 	end
 end
 
+class Buffer_mod
+	@@line_buffer = ''
+	def kill_line
+		#ctrl - k
+	end
+
+	def unkill_line
+		#ctrl + u
+	end
+
+	def find
+		#ctrl + f
+	end
+
+	def indent
+		#ctrl + i
+	end
+
+end
+
+#need to add something for syntax highlighting
+
 BEGIN {
+	$current_line = 0;
 	argv = ARGF.argv[0].to_s
-	$buffer = '';
-	$saved_buffer = $buffer
 	if argv.length > 0 then
-		$file_name = argv 
+		$file_name = argv
 	else
 		$file_name = false
 	end
 }
 
-	fo = File_operation.new
-	
-	
-		if File.file?($file_name) then
-			fo.open
-		end  
-	
-	
+fo = File_operation.new
+fo.open
+
+#on ctrl + c || ctrl + q fo.exit
+
+#on ctrl + s fo.save
+
+#have menu on top of the screen with cmd that can be entered
+
+#have rest of the screen be editable
 
 
 END{
-	
+
 }
-
-
-
-
-# ctrl + s should save
-# if no file passed then a prompt should ask for file name
-# ctrl + c or ctrl + q should quit
-
-#auto convert spaces to tabs
