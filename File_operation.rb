@@ -22,6 +22,7 @@ class File_operation
 	def create
 		print 'enter desired file name: '
 		$file_name = gets.chomp
+		#should display this input on the screen
 		self.save
 	end
 

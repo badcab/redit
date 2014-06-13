@@ -5,9 +5,10 @@ if [ `whoami` != 'root' ] ; then
 	exit
 fi
 
+#on Linux this fails, need to correct
 if [ `uname` == 'FreeBSD' || `uname` == 'Linux' ] ; then
 	if [ -x `which ruby` ] ; then
-		#ruby installed
+		echo 'Installing'
 	else 
 		echo 'You Must Have Ruby Installed to Proceed'
 		exit
