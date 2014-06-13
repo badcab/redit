@@ -11,10 +11,10 @@ BEGIN {
 	$menu_mode = false
 	$screen = Curses::Window.new(0,0,0,0)
 	$screen.keypad(true)
-	$screen.setpos(4,0)
-	$body = $screen.subwin(Curses.lines - 5,Curses.cols,4,0)
+	$screen.setpos(3,0)
+	$body = $screen.subwin(Curses.lines - 4,Curses.cols,3,0)
 	$body.scrollok(true)
-	$body.setscrreg(4,Curses.lines - 1) 
+	$body.setscrreg(3,Curses.lines - 1) 
 
 	Curses.noecho
 
@@ -31,11 +31,11 @@ BEGIN {
 
 	fo.open
 
-	menu_string = "s = save \tu = unkill line \tk = kill line\n"
-	menu_string += "g = go to line \te = go to end \tt = go to top\n"
-	menu_string += "(press esc again to return to editing)\n"
+	menu_string = "s = save \tu = unkill line \tk = kill line \tg = go to line \n"
+	menu_string += "e = go to end \tt = go to top \t\t"
+	menu_string += "esc = resume edit\n"
 	menu_string += '=' * Curses.cols
-	$menu = $screen.subwin(4,Curses.cols,0,0)
+	$menu = $screen.subwin(3,Curses.cols,0,0)
 	$menu.addstr(menu_string)
 	$sub_menu = $screen.subwin(1,Curses.cols,Curses.lines - 1,0)
 }
@@ -47,12 +47,12 @@ loop do
 	if !$menu_mode then
 		if chr.class == Fixnum then
 			
-			if chr == 338 then #Curses::Key::NPAGE
+			if chr == 338 then #PAGE down
 
 				#do scrolling
 
 
-			elsif chr == 339 then #Curses::Key::PPAGE
+			elsif chr == 339 then #PAGE up
 
 				#do scrolling
 				
@@ -60,18 +60,18 @@ loop do
 
 				#go to end of file
 
-			elsif chr == 127 then # Curses::Key::BACKSPACE 
+			elsif chr == 127 then #BACKSPACE 
 				$body.setpos($body.cury,$body.curx - 1)
 				$body.delch() 
-			elsif chr == 259 then #Curses::Key::UP 
+			elsif chr == 259 then #UP 
 				$body.setpos($body.cury - 1,$body.curx)
-			elsif chr == 258 then #Curses::Key::DOWN  
+			elsif chr == 258 then #DOWN  
 				$body.setpos($body.cury + 1,$body.curx)
-			elsif chr == 260 then #Curses::Key::LEFT 
+			elsif chr == 260 then #LEFT 
 				$body.setpos($body.cury,$body.curx - 1)
-			elsif chr == 261 then #Curses::Key::RIGHT 
+			elsif chr == 261 then #RIGHT 
 				$body.setpos($body.cury,$body.curx + 1)
-			elsif chr == 27 then #escape EXIT? maybe
+			elsif chr == 27 then #escape
 				$menu_mode = true
 				option_select_message = 'what would you like to do?: ' 
 				$sub_menu.addstr(option_select_message)

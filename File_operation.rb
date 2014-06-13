@@ -27,7 +27,7 @@ class File_operation
 	end
 
 	def open
-		if $file_name then 
+		if $file_name && File.file?($file_name) then 
 			aFile = File.open($file_name, 'r')
 			aFile.each_line do |line|
 				$body.addstr(line)
