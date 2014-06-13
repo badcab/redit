@@ -10,14 +10,6 @@ class Buffer_mod
 
 	def find
 		#esc + f
-	end
-
-	def clean 
-		#strip trailing while space and all that		
-	end
-	
-	def fix
-		#should get the buffer to have
-	end
+	end 
 
 end

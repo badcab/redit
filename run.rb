@@ -1,15 +1,5 @@
 #!/usr/local/bin/ruby
 
-#I should rethink this whole buffer thing and just let curse take care of it, should make it go a little faster
-
-#need to insert in stead of over writing text
-#tab is not working
-#enter needs to insert a line
-#scrolling needs to be turned on
-
-#when that is done work on general saving and editing of files
-#add auto trim of trailing white space
-
 BEGIN {
 	require 'curses'
 	require './File_operation.rb'
@@ -48,13 +38,11 @@ BEGIN {
 	$menu = $screen.subwin(4,Curses.cols,0,0)
 	$menu.addstr(menu_string)
 	$sub_menu = $screen.subwin(1,Curses.cols,Curses.lines - 1,0)
-
 }
 
 loop do
 	stty_save = `stty -g`.chomp
 	trap('INT') { system('stty', stty_save); exit }
-
 	chr = $screen.getch
 	if !$menu_mode then
 		if chr.class == Fixnum then
@@ -67,7 +55,10 @@ loop do
 			elsif chr == 339 then #Curses::Key::PPAGE
 
 				#do scrolling
+				
+			elsif chr == 360 then #end
 
+				#go to end of file
 
 			elsif chr == 127 then # Curses::Key::BACKSPACE 
 				$body.setpos($body.cury,$body.curx - 1)
@@ -89,7 +80,6 @@ loop do
 				next
 			elsif chr == 10 then # Curses::Key::ENTER 
 				$body.setpos($body.cury + 1,0)
-			#elsif chr == 360 then #end
 			elsif chr == 330 then #delete
 				$body.delch() 
 			end
@@ -106,13 +96,16 @@ loop do
 			$body.refresh
 			next
 		elsif chr == 'e' then #eof 
+			#setting possition easy, scrolling no so much
 		elsif chr == 'g' then #go to
 		elsif chr == 'k' then #kill
+			bm.kill_line
 		elsif chr == 's' then
 			fo.save
 		elsif chr == 't' then #top of file
+			#setting possition easy, scrolling no so much
 		elsif chr == 'u' then #unkill
-
+			bm.unkill_line
 		end
 	end
 end
