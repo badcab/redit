@@ -1,21 +1,12 @@
 #!/usr/local/bin/ruby
 
+#need to insert in stead of over writing text
+#tab is not working
+#enter overwrites the below line instead of inseting
+#need to add scrolling to $body, scroll up at least, and ensure pos sync with buffer
 
-
-
-
-#will need to get this set in insert mode
-#will need to fix the text wrapping issue
-#will need to modify the read and save since the $buffer is now a 2d array
-
-#plan for tonight, first config to open an existing file
-#then work on getting the menu mode to show and then saving
-#tab seems to be broken
-#need to supress the Interrupt in the do loop
-
-
-
-
+#when that is done work on general saving and editing of files
+#add auto trim of trailing white space
 
 BEGIN {
 	require 'curses'
@@ -28,6 +19,15 @@ BEGIN {
 	$current_line = 0
 	$current_col = 0
 	$menu_mode = false
+	$screen = Curses::Window.new(0,0,0,0)
+	$screen.keypad(true)
+	$screen.setpos(4,0)
+	$body = $screen.subwin(Curses.lines - 5,Curses.cols,4,0)
+	$body.scrollok(true)
+	$body.setscrreg(4,Curses.lines - 1) 
+
+	Curses.noecho
+
 	argv = ARGF.argv[0].to_s
 	if argv.length > 0 then
 		$file_name = argv
@@ -40,30 +40,32 @@ BEGIN {
 	highlight = Highlight.new #check if terminal suports color otherwise this is pointless
 
 	fo.open
-	Curses.noecho
 
 	menu_string = "s = save \tu = unkill line\tf = find \tk = kill line\n"
 	menu_string += "q = quit \tg = go to line \te = go to end \tt = go to top\n"
-	menu_string += "(press esc again to return to editing"
+	menu_string += "(press esc again to return to editing)\n"
+	menu_string += '=' * Curses.cols
+	$menu = $screen.subwin(4,Curses.cols,0,0)
+	$menu.addstr(menu_string)
+	#$sub_menu = $screen.subwin(1,Curses.cols,Curses.lines - 1,0)
 
-	screen = Curses::Window.new(0,0,0,0)
 }
 
 loop do
-	chr = screen.getch
+	stty_save = `stty -g`.chomp
+	trap('INT') { system('stty', stty_save); exit }
+
+	chr = $screen.getch
 	if !$menu_mode then
 		if chr.class == Fixnum then
-	#print ': '
-	#print chr
-	#print ' :'
-			if chr == Curses::Key::NPAGE then
-				new_line_pos = $current_line + screen.lines
+			if chr == 338 then #Curses::Key::NPAGE
+				new_line_pos = $current_line + Curses.lines
 				if $buffer.length < new_line_pos then
 					new_line_pos = $buffer.length
 				end
 				$current_line = new_line_pos
-			elsif chr == Curses::Key::PPAGE then
-				new_line_pos = $current_line - screen.lines
+			elsif chr == 339 then #Curses::Key::PPAGE
+				new_line_pos = $current_line - Curses.lines
 				if new_line_pos < 0 then
 					new_line_pos = 0
 				end
@@ -76,34 +78,45 @@ loop do
 					$current_line -=1
 					$current_col = $buffer[$current_line].length
 				end
-			elsif chr == Curses::Key::UP then
+			elsif chr == 259 then #Curses::Key::UP
 				if $current_line > 0 then
 					$current_line -=1
+					if $current_col > $buffer[$current_line].length then
+						$current_col = $buffer[$current_line].length
+					end
 				end
-			elsif chr == Curses::Key::DOWN then
-				if $buffer.length > $current_line then
+			elsif chr == 258 then #Curses::Key::DOWN 
+				if $buffer.length - 1 > $current_line then
 					$current_line +=1
+					if $current_col > $buffer[$current_line].length then
+						$current_col = $buffer[$current_line].length
+					end
 				end
-			elsif chr == Curses::Key::LEFT then
+			elsif chr == 260 then #Curses::Key::LEFT
 				if $current_col > 0 then
-					current_col -=1
+					$current_col -=1
 				end
-			elsif chr == Curses::Key::RIGHT then
+			elsif chr == 261 then #Curses::Key::RIGHT
+				if $buffer[$current_line].class == NilClass then
+					$buffer[$current_line] = Array.new
+				end
 				if $buffer[$current_line].length > $current_col then
 					$current_col +=1
 				end
 			elsif chr == 27 then #escape EXIT? maybe
 				$menu_mode = true
-				screen.clear()
-				screen.addstr(menu_string)
-				screen.setpos(3,0)
-				screen.refresh
+				option_select_message = 'what would you like to do?: '
+				$sub_menu.addstr(option_select_message)
+				
+				$body.setpos(0,option_select_message.length)
+				$sub_menu.refresh
 				next
 			elsif chr == 10 then # Curses::Key::ENTER
 				$current_col = 0
 				$current_line +=1
-			#elsif chr ==  then #end
-			#elsif chr ==  then #delete
+				$buffer[$current_line] = Array.new
+			#elsif chr == 360 then #end
+			#elsif chr == 330 then #delete
 
 			end
 		elsif chr.class == String then
@@ -113,19 +126,23 @@ loop do
 			$buffer[$current_line][$current_col] = chr
 			$current_col +=1
 		end
-		screen.clear()
+		$body.clear
 		$buffer.each do |line|
 			line.each do |char|
-				screen.addstr(char.to_s)
+				$body.addstr(char.to_s)
 			end
-			screen.addstr("\n")
+			$body.addstr("\n")
 		end
-		screen.setpos($current_line,$current_col)
-		screen.refresh
+		$body.setpos($current_line,$current_col)
+		$body.refresh
 	end
 	if $menu_mode then
 		if chr == 27 then #escape EXIT? maybe
 			$menu_mode = false
+			$sub_menu.clear
+			$sub_menu.refresh
+			$body.setpos($current_line,$current_col)
+			$body.refresh
 			next
 		elsif chr == 'e' then #eof
 		elsif chr == 'f' then #find
@@ -139,11 +156,9 @@ loop do
 		elsif chr == 'u' then #unkill
 
 		end
-
-		#have conditionals searching for input
 	end
 end
 
 END{
-	screen.close_screen()
+	Curses.close_screen()
 }

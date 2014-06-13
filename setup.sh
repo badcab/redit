@@ -5,8 +5,7 @@ if [ `whoami` != 'root' ] ; then
 	exit
 fi
 
-#on Linux this fails, need to correct
-if [ `uname` == 'FreeBSD' || `uname` == 'Linux' ] ; then
+if [ `uname` == 'Linux' ] || [ `uname` == 'FreeBSD' ] ; then
 	if [ -x `which ruby` ] ; then
 		echo 'Installing'
 	else 
@@ -17,10 +16,10 @@ if [ `uname` == 'FreeBSD' || `uname` == 'Linux' ] ; then
 	#check if the curses gem is installed
 	
 	mkdir -p /usr/local/bin/ruby_text_edit
-	mv *.rb /usr/local/bin/ruby_text_edit
+	cp *.rb /usr/local/bin/ruby_text_edit
 	
-	echo '#!/bin/sh'"\n" > /usr/local/bin/redit
-	echo 'ruby /usr/local/bin/ruby_text_edit/run.rb'
+	echo '#!/bin/sh'> /usr/local/bin/redit
+	echo "ruby /usr/local/bin/ruby_text_edit/run.rb $*">> /usr/local/bin/redit
 	chmod +x /usr/local/bin/redit
 	chmod +x /usr/local/bin/ruby_text_edit/*.rb
 	

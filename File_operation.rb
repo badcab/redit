@@ -4,25 +4,23 @@ class File_operation
 			self.create
 		end
 		aFile = File.new($file_name, 'w')
-
 		result = '';
 		$buffer.each do |line|
-			line.gsub '    ', "\t"
-			#strip coloring and other garbage
-			result += line
+			line.each do |char|
+				result += char.to_s
+			end
+			result += "\n"
 		end
-
 		aFile.syswrite(result) if aFile
-#check for exceptions
 		$saved_buffer = $buffer
-
 		aFile.close if aFile
 	end
 
-	def create
-		print 'enter desired file name: '
+	def create 
+		$screen.addstr('enter desired file name: ') #put this at the bottem
 		$file_name = gets.chomp
 		#should display this input on the screen
+		$screen.setpos($screen.lines - 1,0)
 		self.save
 	end
 
@@ -37,12 +35,20 @@ class File_operation
 	end
 
 	def open
+		$buffer = Array.new
 		if $file_name then
+#need to do a check if the file exists
+#there might be some path issues
 			aFile = File.open($file_name, 'r')
-			$buffer = aFile.each_line
+			i = 0
+			aFile.each_line do |line|
+				$buffer[i] = Array.new
+				$buffer[i] = line.split(//)
+				i +=1
+			end
+
 			aFile.close if aFile
-		else
-			$buffer = Array.new
+			
 		end
 		$saved_buffer = $buffer
 	end
