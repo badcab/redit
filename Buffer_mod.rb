@@ -1,23 +1,23 @@
 class Buffer_mod
 	@@line_buffer = ''
 	def kill_line
-		#ctrl - k
+		#get the current line and store it in the class var before deliting
 	end
 
 	def unkill_line
-		#ctrl + u
+		#esc + u
 	end
 
 	def find
-		#ctrl + f
+		#esc + f
 	end
 
-	def indent
-		#ctrl + i
+	def clean 
+		#strip trailing while space and all that		
 	end
 	
-	def clean
-		# remove \r and convert spaces to tabs and the like
+	def fix
+		#should get the buffer to have
 	end
 
 end

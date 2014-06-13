@@ -19,7 +19,7 @@ if [ `uname` == 'Linux' ] || [ `uname` == 'FreeBSD' ] ; then
 	cp *.rb /usr/local/bin/ruby_text_edit
 	
 	echo '#!/bin/sh'> /usr/local/bin/redit
-	echo "ruby /usr/local/bin/ruby_text_edit/run.rb $*">> /usr/local/bin/redit
+	echo 'ruby /usr/local/bin/ruby_text_edit/run.rb $*'>> /usr/local/bin/redit
 	chmod +x /usr/local/bin/redit
 	chmod +x /usr/local/bin/ruby_text_edit/*.rb
 	
