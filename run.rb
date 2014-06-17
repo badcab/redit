@@ -2,9 +2,9 @@
 
 BEGIN {
 	require 'curses'
-	require './File_operation.rb'
-	require './Buffer_mod.rb'
-	require './Highlight.rb'
+	require "#{File.dirname(__FILE__)}/File_operation.rb"
+	require "#{File.dirname(__FILE__)}/Buffer_mod.rb"
+	require "#{File.dirname(__FILE__)}/Highlight.rb"
 
 	include Curses
 	Curses.init_screen() 
