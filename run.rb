@@ -65,7 +65,7 @@ loop do
 
 			elsif chr == 127 then #BACKSPACE 
 				if $body.curx == 0 then
-					$body.setpos($body.cury - 1,10)#10 is made up, need to figure out how to get eol 
+					$body.setpos($body.cury - 1,10)#10 is made up, need to figure out how to get  
 				end
 				$body.setpos($body.cury,$body.curx - 1)
 				$body.delch() 
@@ -90,7 +90,10 @@ loop do
 				$body.delch() 
 			end
 		elsif chr.class == String then
-			$body.addch(chr)
+			#$body.addch(chr) 
+			$body.insch(chr)
+			$body.setpos($body.cury,$body.curx + 1)
+			
 		end 
 		$body.refresh
 	end
