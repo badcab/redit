@@ -7,18 +7,20 @@ BEGIN {
 	require "#{File.dirname(__FILE__)}/Highlight.rb"
 
 	include Curses
-	Curses.init_screen() 
-	Curses.TABSIZE = 4
+	Curses.init_screen()
+	TOP_MENU_LINES = 3
+	BOTTOM_MENU_LINES = 1
 	$menu_mode = false
 	$screen = Curses::Window.new(0,0,0,0)
 	$screen.keypad(true)
-	$screen.setpos(3,0)
-	$body = $screen.subwin(Curses.lines - 4,Curses.cols,3,0)
+	$screen.setpos(TOP_MENU_LINES,0)
+	$body = $screen.subwin(Curses.lines - TOP_MENU_LINES,Curses.cols,TOP_MENU_LINES,0)
 	#$body.scrollok(true) 
 	#$body.setscrreg(0, 5)
-	$body.setscrreg(3,Curses.lines - 1) 
+	#$body.setscrreg(3,Curses.lines - 1) 
 
 	Curses.noecho
+	Curses.mousemask(ALL_MOUSE_EVENTS)
 
 	argv = ARGF.argv[0].to_s
 	if argv.length > 0 then
@@ -33,13 +35,13 @@ BEGIN {
 
 	fo.open
 
-	menu_string = "s = save \t\tu = unkill line \tk = kill line \tg = go to line \n"
+	menu_string = "s = save \tu = unkill line \tk = kill line \tg = go to line \n"
 	menu_string += "e = go to end \tt = go to top \t\t"
 	menu_string += "esc = resume edit\n"
 	menu_string += '=' * Curses.cols
-	$menu = $screen.subwin(3,Curses.cols,0,0)
+	$menu = $screen.subwin(TOP_MENU_LINES,Curses.cols,0,0)
 	$menu.addstr(menu_string)
-	$sub_menu = $screen.subwin(1,Curses.cols,Curses.lines - 1,0)
+	$sub_menu = $screen.subwin(BOTTOM_MENU_LINES,Curses.cols,Curses.lines - BOTTOM_MENU_LINES,0)
 }
 
 loop do
@@ -48,6 +50,7 @@ loop do
 	chr = $screen.getch
 	if !$menu_mode then
 		if chr.class == Fixnum then
+
 			#add something for tab here
 			if chr == 338 then #PAGE down
 
@@ -69,6 +72,9 @@ loop do
 				end
 				$body.setpos($body.cury,$body.curx - 1)
 				$body.delch() 
+			elsif chr == 409 then #MOUSE
+				m = getmouse
+				$body.setpos(m.y - TOP_MENU_LINES,m.x)
 			elsif chr == 259 then #UP 
 				$body.setpos($body.cury - 1,$body.curx)
 			elsif chr == 258 then #DOWN  
@@ -84,21 +90,19 @@ loop do
 				$sub_menu.setpos(0,option_select_message.length)
 				$sub_menu.refresh
 				next
-			elsif chr == 10 then # Curses::Key::ENTER 
+			elsif chr == 10 then #ENTER 
 				$body.setpos($body.cury + 1,0)
 			elsif chr == 330 then #delete
 				$body.delch() 
 			end
 		elsif chr.class == String then
-			#$body.addch(chr) 
 			$body.insch(chr)
 			$body.setpos($body.cury,$body.curx + 1)
-			
 		end 
 		$body.refresh
 	end
 	if $menu_mode then
-		if chr == 27 then #escape EXIT? maybe
+		if chr == 27 then #escape
 			$menu_mode = false
 			$sub_menu.clear
 			$sub_menu.refresh 
