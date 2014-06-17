@@ -8,12 +8,14 @@ BEGIN {
 
 	include Curses
 	Curses.init_screen() 
+	Curses.TABSIZE = 4
 	$menu_mode = false
 	$screen = Curses::Window.new(0,0,0,0)
 	$screen.keypad(true)
 	$screen.setpos(3,0)
 	$body = $screen.subwin(Curses.lines - 4,Curses.cols,3,0)
-	$body.scrollok(true)
+	#$body.scrollok(true) 
+	#$body.setscrreg(0, 5)
 	$body.setscrreg(3,Curses.lines - 1) 
 
 	Curses.noecho
@@ -31,7 +33,7 @@ BEGIN {
 
 	fo.open
 
-	menu_string = "s = save \tu = unkill line \tk = kill line \tg = go to line \n"
+	menu_string = "s = save \t\tu = unkill line \tk = kill line \tg = go to line \n"
 	menu_string += "e = go to end \tt = go to top \t\t"
 	menu_string += "esc = resume edit\n"
 	menu_string += '=' * Curses.cols
@@ -46,21 +48,25 @@ loop do
 	chr = $screen.getch
 	if !$menu_mode then
 		if chr.class == Fixnum then
-			
+			#add something for tab here
 			if chr == 338 then #PAGE down
 
 				#do scrolling
-
+				#$body.scrl() should be usiing Curses.lines for body -neg num scrolls down
 
 			elsif chr == 339 then #PAGE up
 
 				#do scrolling
+				#$body.scrl() should be usiing Curses.lines for body +pos num scrolls up
 				
 			elsif chr == 360 then #end
 
 				#go to end of file
 
 			elsif chr == 127 then #BACKSPACE 
+				if $body.curx == 0 then
+					$body.setpos($body.cury - 1,10)#10 is made up, need to figure out how to get eol 
+				end
 				$body.setpos($body.cury,$body.curx - 1)
 				$body.delch() 
 			elsif chr == 259 then #UP 
@@ -99,6 +105,7 @@ loop do
 			#setting possition easy, scrolling no so much
 		elsif chr == 'g' then #go to
 		elsif chr == 'k' then #kill
+			#Curses.clrtoeol deleteln
 			bm.kill_line
 		elsif chr == 's' then
 			fo.save
