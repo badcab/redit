@@ -104,22 +104,30 @@ loop do
 	if $menu_mode then
 		if chr == 27 then #escape
 			$menu_mode = false
+		elsif chr == 'e' then #eof 
+			#setting possition easy, scrolling no so much
+		elsif chr == 'g' then #go to
+			#$menu_mode = false
+		elsif chr == 'k' then #kill
+			#Curses.clrtoeol deleteln
+			bm.kill_line
+			#$menu_mode = false
+		elsif chr == 's' then
+			fo.save
+			$menu_mode = false
+		elsif chr == 't' then #top of file
+			#setting possition easy, scrolling no so much
+			#$menu_mode = false
+		elsif chr == 'u' then #unkill
+			bm.unkill_line
+			#$menu_mode = false
+		end
+		
+		if !$menu_mode then
 			$sub_menu.clear
 			$sub_menu.refresh 
 			$body.refresh
 			next
-		elsif chr == 'e' then #eof 
-			#setting possition easy, scrolling no so much
-		elsif chr == 'g' then #go to
-		elsif chr == 'k' then #kill
-			#Curses.clrtoeol deleteln
-			bm.kill_line
-		elsif chr == 's' then
-			fo.save
-		elsif chr == 't' then #top of file
-			#setting possition easy, scrolling no so much
-		elsif chr == 'u' then #unkill
-			bm.unkill_line
 		end
 	end
 end
