@@ -7,11 +7,11 @@ currently not in working state
 
 to install
 ==
-$ su -c './setup.sh'
+ ```$ su -c './setup.sh' ```
 
 to run
 ==
-$ redit
+ ```$ redit ```
 
 use
 ==
