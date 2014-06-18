@@ -69,7 +69,16 @@ loop do
 			elsif chr == 127 then #BACKSPACE 
 				if $body.curx == 0 then
 					$body.setpost($body.cury -1, Curses.cols)
-					#add a loop where I get the value of the char at the current possition, if not white space then stop else back up one space
+					reverse = true
+					while reverse do
+						cur_char = $body.inch()
+						#if cur_char is whitespace or null and curx is greater than 0
+						$body.setpos($body.cury,$body.curx - 1)
+						#else
+						reverse = false
+						#end
+
+					end
 				end
 				$body.setpos($body.cury,$body.curx - 1)
 				$body.delch() 
