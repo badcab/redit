@@ -68,7 +68,8 @@ loop do
 
 			elsif chr == 127 then #BACKSPACE 
 				if $body.curx == 0 then
-					$body.setpos($body.cury - 1,10)#10 is made up, need to figure out how to get  
+					$body.setpost($body.cury -1, Curses.cols)
+					#add a loop where I get the value of the char at the current possition, if not white space then stop else back up one space
 				end
 				$body.setpos($body.cury,$body.curx - 1)
 				$body.delch() 
