@@ -43,11 +43,14 @@ class File_operation
 
 	def open
 		if $file_name && File.file?($file_name) then 
+			y = $body.cury
+			x = $body.curx
 			aFile = File.open($file_name, 'r')
 			aFile.each_line do |line|
 				$body.addstr(line)
 			end 
 			aFile.close if aFile
+			$body.setpos(y, x)
 		end
 	end
 end

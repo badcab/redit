@@ -42,10 +42,7 @@ BEGIN {
 	$menu.addstr(menu_string)
 	$sub_menu = $screen.subwin(BOTTOM_MENU_LINES,Curses.cols,Curses.lines - BOTTOM_MENU_LINES,0)
 
-
-
-	$body.setpos(TOP_MENU_LINES,0)
-#the starting possition, especially after hitting an arrow key the first time is all wrong
+	$screen.setpos(TOP_MENU_LINES,0) 
 }
 
 loop do
@@ -72,19 +69,24 @@ loop do
 
 			elsif chr == 127 then #BACKSPACE 
 				if $body.curx == 0 then
-					$body.setpost($body.cury -1, Curses.cols)
-					reverse = true
-					while reverse do
-						cur_char = $body.inch()
-						if cur_char == " " || cur_char == nil || $body.curx > 1
-							$body.setpos($body.cury,$body.curx - 1)
-						else
-							reverse = false
-						end
-					end
+					$body.setpos($body.cury - 1, 15) #not working for some reason using 15 as a dumby value
+		 		
+
+
+#					reverse = true
+#					while reverse do
+#						cur_char = $body.inch()
+#						if cur_char == " " || cur_char == nil || $body.curx > 1
+#							$body.setpos($body.cury,$body.curx - 1)
+#						else
+#							reverse = false
+#						end
+#					end
+				else
+					$body.setpos($body.cury,$body.curx - 1)
+					$body.delch() 
 				end
-				$body.setpos($body.cury,$body.curx - 1)
-				$body.delch() 
+				
 			elsif chr == 409 then #MOUSE
 				m = getmouse
 				$body.setpos(m.y - TOP_MENU_LINES,m.x)
