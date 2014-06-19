@@ -72,12 +72,11 @@ loop do
 					reverse = true
 					while reverse do
 						cur_char = $body.inch()
-						#if cur_char is whitespace or null and curx is greater than 0
-						$body.setpos($body.cury,$body.curx - 1)
-						#else
-						reverse = false
-						#end
-
+						if cur_char == " " || cur_char == nil || $body.curx > 1
+							$body.setpos($body.cury,$body.curx - 1)
+						else
+							reverse = false
+						end
 					end
 				end
 				$body.setpos($body.cury,$body.curx - 1)
@@ -123,7 +122,7 @@ loop do
 			bm.kill_line
 			#$menu_mode = false
 		elsif chr == 's' then
-			fo.save
+			fo.save(TOP_MENU_LINES)
 			$menu_mode = false
 		elsif chr == 't' then #top of file
 			#setting possition easy, scrolling no so much

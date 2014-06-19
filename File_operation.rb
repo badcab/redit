@@ -1,14 +1,28 @@
 class File_operation
-	def save
+	def save (body_top_offset)
 		if !$file_name then
 			self.create
 		end
 		aFile = File.new($file_name, 'w')
-		result = $body.getstr #untested
-		
-#need to strip trailing white space		
-		
-		
+		result = ""
+#========================================
+		origional_x = $body.curx
+		origional_y = $body.cury
+
+		window_cols = (0..$body.maxx()).to_a
+		window_rows = (body_top_offset..($body.maxy() + body_top_offset)).to_a
+
+		window_rows.each do |row|
+			window_cols.each do |col|
+				$body.setpos(row,col)
+				result.concat($body.inch())
+			end
+			#here is where I should cycle through and remove whitespace from the end, use a loop and array reverse or something
+			result.concat("\n")
+		end
+
+		$body.setpos(origional_y, origional_x)
+#======================================== 
 		aFile.syswrite(result) if aFile
 		
 		aFile.close if aFile
