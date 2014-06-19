@@ -13,7 +13,6 @@ BEGIN {
 	$menu_mode = false
 	$screen = Curses::Window.new(0,0,0,0)
 	$screen.keypad(true)
-	$screen.setpos(TOP_MENU_LINES,0)
 	$body = $screen.subwin(Curses.lines - TOP_MENU_LINES,Curses.cols,TOP_MENU_LINES,0)
 	#$body.scrollok(true) 
 	#$body.setscrreg(0, 5)
@@ -42,6 +41,11 @@ BEGIN {
 	$menu = $screen.subwin(TOP_MENU_LINES,Curses.cols,0,0)
 	$menu.addstr(menu_string)
 	$sub_menu = $screen.subwin(BOTTOM_MENU_LINES,Curses.cols,Curses.lines - BOTTOM_MENU_LINES,0)
+
+
+
+	$body.setpos(TOP_MENU_LINES,0)
+#the starting possition, especially after hitting an arrow key the first time is all wrong
 }
 
 loop do

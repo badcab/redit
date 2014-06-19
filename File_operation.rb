@@ -5,7 +5,7 @@ class File_operation
 		end
 		aFile = File.new($file_name, 'w')
 		result = ""
-#========================================
+
 		origional_x = $body.curx
 		origional_y = $body.cury
 
@@ -22,7 +22,7 @@ class File_operation
 		end
 
 		$body.setpos(origional_y, origional_x)
-#======================================== 
+
 		aFile.syswrite(result) if aFile
 		
 		aFile.close if aFile
