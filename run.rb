@@ -8,6 +8,8 @@ BEGIN {
 
 	include Curses
 	Curses.init_screen()
+	Curses.TABSIZE = 4
+	Curses.ESCDELAY = 0
 	TOP_MENU_LINES = 3
 	BOTTOM_MENU_LINES = 1
 	$menu_mode = false
@@ -68,13 +70,12 @@ loop do
 				#go to end of file
 
 			elsif chr == 9 then #tab
-
-				#tab stuff
-
+				$body.insch("\t")
+				$body.setpos($body.cury, $body.curx + Curses.TABSIZE) 
 			elsif chr == 127 then #BACKSPACE 
 				if $body.curx == 0 then
 					$body.setpos($body.cury - 1, 15) #not working for some reason using 15 as a dumby value
-		 		
+#backspace will need to do a check for a tab
 
 
 #					reverse = true
@@ -90,7 +91,6 @@ loop do
 					$body.setpos($body.cury,$body.curx - 1)
 					$body.delch() 
 				end
-				
 			elsif chr == 409 then #MOUSE
 				m = getmouse
 				$body.setpos(m.y - TOP_MENU_LINES,m.x)

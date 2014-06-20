@@ -20,4 +20,11 @@ class Buffer_mod
 		end 
 	end
 
+	def end_of_line_x_pos
+		#get curr y on $body
+		#recurse backward walking over white space
+			#do this using a loop
+		#return value should be the int of the X at end of line
+	end
+
 end
