@@ -67,6 +67,10 @@ loop do
 
 				#go to end of file
 
+			elsif chr == 9 then #tab
+
+				#tab stuff
+
 			elsif chr == 127 then #BACKSPACE 
 				if $body.curx == 0 then
 					$body.setpos($body.cury - 1, 15) #not working for some reason using 15 as a dumby value

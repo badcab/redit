@@ -18,6 +18,8 @@ class File_operation
 				result.concat($body.inch())
 			end
 			#here is where I should cycle through and remove whitespace from the end, use a loop and array reverse or something
+#Buffer_mod.whitespace? is what I will be using
+#so later on I will find out if I need to include the file and all that jazz
 			result.concat("\n")
 		end
 
@@ -35,6 +37,16 @@ class File_operation
 		$sub_menu.addstr(option_select_message) #put this at the bottem
 		$sub_menu.setpos(0,option_select_message.length)
 		$sub_menu.refresh 
+		loop do
+			chr = $screen.getch
+			if chr.class == Fixnum then
+				#if enter then check string name and save
+				#if esc then exit this mode
+			elsif chr.class == String then
+				#add char to area
+				#$sub_menu.refresh 
+			end
+		end
 		#do something to wait for an enter from getch 
 		#put a loop here to wait for an enter press, that would trigger the save action
 		
