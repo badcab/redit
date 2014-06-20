@@ -72,7 +72,10 @@ loop do
 				$body.setpos($body.cury, $body.curx + Curses.TABSIZE) 
 			elsif chr == 127 then #BACKSPACE 
 				if $body.curx == 0 then
-					$body.setpos($body.cury - 1, bm.end_of_line_x_pos) 
+					if $body.cury > 0 then
+						$body.setpos($body.cury - 1, $body.curx) 
+						$body.setpos($body.cury, bm.end_of_line_x_pos)
+					end
 				else
 					#backspace will need to do a check for a tab
 					$body.setpos($body.cury,$body.curx - 1)
