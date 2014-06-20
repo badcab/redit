@@ -36,8 +36,8 @@ BEGIN {
 
 	fo.open
 
-	menu_string = "s = save \tu = unkill line \tk = kill line \tg = go to line \n"
-	menu_string += "e = go to end \tt = go to top \t\t"
+	menu_string = "u = unkill line \te = go to end \tg = go to line \t\ts = save\n"   
+	menu_string += "k = kill line \t\tt = go to top\t"
 	menu_string += "esc = resume edit\n"
 	menu_string += '=' * Curses.cols
 	$menu = $screen.subwin(TOP_MENU_LINES,Curses.cols,0,0)
@@ -74,22 +74,11 @@ loop do
 				$body.setpos($body.cury, $body.curx + Curses.TABSIZE) 
 			elsif chr == 127 then #BACKSPACE 
 				if $body.curx == 0 then
-					$body.setpos($body.cury - 1, 15) #not working for some reason using 15 as a dumby value
-#backspace will need to do a check for a tab
-
-
-#					reverse = true
-#					while reverse do
-#						cur_char = $body.inch()
-#						if cur_char == " " || cur_char == nil || $body.curx > 1
-#							$body.setpos($body.cury,$body.curx - 1)
-#						else
-#							reverse = false
-#						end
-#					end
+					$body.setpos($body.cury - 1, bm.end_of_line_x_pos) 
 				else
+					#backspace will need to do a check for a tab
 					$body.setpos($body.cury,$body.curx - 1)
-					$body.delch() 
+					$body.delch()
 				end
 			elsif chr == 409 then #MOUSE
 				m = getmouse
@@ -99,8 +88,10 @@ loop do
 			elsif chr == 258 then #DOWN  
 				$body.setpos($body.cury + 1,$body.curx)
 			elsif chr == 260 then #LEFT 
+				#backspace will need to do a check for a tab
 				$body.setpos($body.cury,$body.curx - 1)
 			elsif chr == 261 then #RIGHT 
+				#backspace will need to do a check for a tab
 				$body.setpos($body.cury,$body.curx + 1)
 			elsif chr == 27 then #escape
 				$menu_mode = true
@@ -127,6 +118,7 @@ loop do
 			#setting possition easy, scrolling no so much
 		elsif chr == 'g' then #go to
 			#$menu_mode = false
+			bm.go_to_line
 		elsif chr == 'k' then #kill
 			#Curses.clrtoeol deleteln
 			bm.kill_line

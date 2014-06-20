@@ -10,6 +10,11 @@ class Buffer_mod
 
 	def find
 		#esc + f
+	end
+
+	def go_to_line
+		#esc + g
+		#will set the current possition to the set row
 	end 
 
 	def whitespace? (char)
@@ -25,6 +30,7 @@ class Buffer_mod
 		#recurse backward walking over white space
 			#do this using a loop
 		#return value should be the int of the X at end of line
+		25
 	end
 
 end
