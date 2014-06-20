@@ -53,8 +53,6 @@ loop do
 	chr = $screen.getch
 	if !$menu_mode then
 		if chr.class == Fixnum then
-
-			#add something for tab here
 			if chr == 338 then #PAGE down
 
 				#do scrolling

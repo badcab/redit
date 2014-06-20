@@ -7,7 +7,7 @@ fi
 if [ `uname` == 'Linux' ] || [ `uname` == 'FreeBSD' ] ; then
 	if [ -x `which ruby` ] ; then
 		echo 'Installing'
-	else 
+	else
 		echo 'You Must Have Ruby Installed to Proceed'
 		exit
 	fi
