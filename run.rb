@@ -16,6 +16,8 @@ BEGIN {
 	$screen = Curses::Window.new(0,0,0,0)
 	$screen.keypad(true)
 	$body = $screen.subwin(Curses.lines - TOP_MENU_LINES,Curses.cols,TOP_MENU_LINES,0)
+	$body_content = ''
+
 	#$body.scrollok(true) 
 	#$body.setscrreg(0, 5)
 	#$body.setscrreg(3,Curses.lines - 1) 
@@ -95,6 +97,25 @@ loop do
 				$body.setpos($body.cury,$body.curx + 1)
 			elsif chr == 27 then #escape
 				$menu_mode = true
+
+				$body_content = ''
+				origional_x = $body.curx
+				origional_y = $body.cury
+
+				window_cols = (0..$body.maxx()).to_a
+				window_rows = (TOP_MENU_LINES..($body.maxy() + TOP_MENU_LINES)).to_a
+
+				window_rows.each do |row|
+					window_cols.each do |col|
+						$body.setpos(row,col)
+						$body_content.concat($body.inch())
+					end
+					$body_content.sub(/\s+\Z/, "") #strip trailing whitespace
+					$body_content.gsub(/\s\s\s\s/, "\t") #convert spaces to tabs
+					$body_content.concat("\n")
+				end
+				$body.setpos(origional_y, origional_x)
+
 				option_select_message = 'what would you like to do?: ' 
 				$sub_menu.addstr(option_select_message)
 				$sub_menu.setpos(0,option_select_message.length)
@@ -124,7 +145,7 @@ loop do
 			bm.kill_line
 			#$menu_mode = false
 		elsif chr == 's' then
-			fo.save(TOP_MENU_LINES)
+			fo.save
 			$menu_mode = false
 		elsif chr == 't' then #top of file
 			#setting possition easy, scrolling no so much
